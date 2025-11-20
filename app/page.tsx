@@ -78,7 +78,7 @@ export default function Home() {
               }`}
             >
               <div className="text-4xl mb-2">🎲</div>
-              <div className="font-bold text-lg">1명 뽑기</div>
+              <div className="font-bold text-lg">N명 뽑기</div>
               <div className="text-sm opacity-70 mt-1">
                 발표자, 벌칙자 선정
               </div>
@@ -108,7 +108,7 @@ export default function Home() {
               <div className="space-y-6">
                 <div>
                   <h3 className="text-2xl font-bold mb-2 text-white">
-                    🎲 1명 뽑기 모드
+                    🎲 N명 뽑기 모드
                   </h3>
                   <p className="text-gray-400">
                     이름을 입력하고 랜덤으로 한 명을 뽑아보세요!

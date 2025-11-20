@@ -20,6 +20,7 @@ const Capsule = ({ color, index, isShaking }: CapsuleProps) => {
   return (
     <motion.div
       className="absolute w-10 h-10"
+      // 여기가 레버 눌렀을 때 공 랜덤 흔들리는 애니메이션 부분입니다.
       animate={
         isShaking
           ? {
@@ -88,7 +89,7 @@ interface GachaMachineBoxProps {
   names: string[]
 }
 
-const GRAVITY = 0.6
+const GRAVITY = 0.8
 const DAMPING = 0.98
 const BOUNCE = 0.6
 const FRICTION = 0.02
@@ -141,7 +142,7 @@ export default function GachaMachineBox({ isShaking, names }: GachaMachineBoxPro
   }, [names.length])
 
   useEffect(() => {
-    if (names.length === 0) {
+    if (isShaking || names.length === 0) {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
       }
@@ -149,17 +150,6 @@ export default function GachaMachineBox({ isShaking, names }: GachaMachineBoxPro
     }
 
     const simulate = () => {
-      // shaking 중에는 랜덤 힘 추가
-      if (isShaking) {
-        const capsules = capsulesRef.current
-        for (let i = 0; i < capsules.length; i++) {
-          const c = capsules[i]
-          // 랜덤 방향으로 강한 힘 추가
-          c.vx += (Math.random() - 0.5) * 4
-          c.vy += (Math.random() - 0.5) * 4
-        }
-      }
-
       const capsules = capsulesRef.current
 
       for (let i = 0; i < capsules.length; i++) {
@@ -286,10 +276,6 @@ export default function GachaMachineBox({ isShaking, names }: GachaMachineBoxPro
           </div>
         )}
 
-        <div className="absolute top-0.25 left-0 right-0 h-20 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-        <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-r from-white/40 to-transparent" />
-        <div className="absolute right-0 top-0 bottom-0 w-2 bg-gradient-to-l from-white/40 to-transparent" />
       </div>
 
       <div

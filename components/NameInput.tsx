@@ -16,8 +16,25 @@ export default function NameInput() {
       return
     }
 
-    // 중복 체크 제거 - 항상 추가 가능
-    addName(trimmedName)
+    // 쉼표로 구분된 경우 처리
+    const entries = trimmedName.split(',').map(e => e.trim()).filter(e => e)
+    
+    entries.forEach(entry => {
+      // 패턴 체크: 이름*숫자
+      const match = entry.match(/^(.+)\*(\d+)$/)
+      if (match) {
+        const [, name, countStr] = match
+        const count = parseInt(countStr)
+        if (count > 0 && count <= 100) {
+          for (let i = 0; i < count; i++) {
+            addName(name.trim())
+          }
+        }
+      } else {
+        addName(entry)
+      }
+    })
+
     setInputValue('')
   }
 
@@ -25,22 +42,6 @@ export default function NameInput() {
     if (e.key === 'Enter') {
       handleAddName()
     }
-  }
-
-  const handleBulkAdd = () => {
-    const bulkText = prompt('이름들을 입력해주세요 (쉼표, 줄바꿈으로 구분):')
-    if (!bulkText) return
-
-    // 쉼표 또는 줄바꿈으로 분리
-    const newNames = bulkText
-      .split(/[,\n]/)
-      .map(name => name.trim())
-      .filter(name => name.length > 0)
-
-    // 중복 체크 없이 모두 추가
-    newNames.forEach(name => {
-      addName(name)
-    })
   }
 
   return (
@@ -57,7 +58,7 @@ export default function NameInput() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="이름을 입력하세요"
+            placeholder="이름 입력 (예: ooo*10,xxx*5)"
             className="flex-1 px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-white text-white placeholder-gray-500 transition-colors"
           />
           <button
@@ -68,13 +69,9 @@ export default function NameInput() {
           </button>
         </div>
 
-        {/* 빠른 추가 버튼 */}
-        <button
-          onClick={handleBulkAdd}
-          className="text-sm text-gray-400 hover:text-white transition-colors"
-        >
-          📋 여러 명 한번에 추가하기
-        </button>
+        <div className="text-xs bg-gradient-to-r from-cyan-400 via-emerald-400 to-lime-400 bg-clip-text text-transparent">
+          Tip: 쉼표로 구분하여 여러 명 추가 가능 (예: ooo*10,xxx*5)
+        </div>
       </div>
 
       {/* 참가자 리스트 */}
@@ -99,16 +96,25 @@ export default function NameInput() {
           </div>
         ) : (
           <div className="space-y-2 max-h-60 overflow-y-auto">
-            {names.map((name, index) => (
+            {Object.entries(
+              names.reduce((acc, name) => {
+                acc[name] = (acc[name] || 0) + 1
+                return acc
+              }, {} as Record<string, number>)
+            ).map(([name, count]) => (
               <div
-                key={`${name}-${index}`}
+                key={name}
                 className="flex items-center justify-between px-4 py-3 bg-zinc-900 rounded-lg hover:bg-zinc-800 transition-colors"
               >
                 <span className="font-medium text-white">
-                  {index + 1}. {name}
+                  {name} - {count}명
                 </span>
                 <button
-                  onClick={() => removeName(index)}
+                  onClick={() => {
+                    // 해당 이름 전부 삭제
+                    const indices = names.map((n, i) => n === name ? i : -1).filter(i => i !== -1).reverse()
+                    indices.forEach(i => removeName(i))
+                  }}
                   className="text-gray-500 hover:text-red-400 transition-colors"
                 >
                   <X size={18} />

@@ -10,7 +10,8 @@ import GachaLever from '@/components/GachaLever'
 export default function GachaMachine() {
   const { names, history, addToHistory } = useGachaStore()
   const [phase, setPhase] = useState<'idle' | 'shaking' | 'falling' | 'result'>('idle')
-  const [result, setResult] = useState<string | null>(null)
+  const [result, setResult] = useState<string[]>([])
+  const [pickCount, setPickCount] = useState(1)
   const [isMounted, setIsMounted] = useState(false)
 
   /**
@@ -32,14 +33,17 @@ export default function GachaMachine() {
       return
     }
 
-    // 1단계: 캡슐들이 섞이기 (3초)
+    if (pickCount > names.length) {
+      alert(`참가자가 ${names.length}명이라 ${pickCount}명을 뽑을 수 없어요!`)
+      return
+    }
+
     setPhase('shaking')
     
-    // 랜덤으로 당첨자 선택
-    const randomIndex = Math.floor(Math.random() * names.length)
-    const picked = names[randomIndex]
+    // 랜덤으로 여러 명 선택
+    const shuffled = [...names].sort(() => Math.random() - 0.5)
+    const picked = shuffled.slice(0, pickCount)
 
-    // 2단계: 캡슐 떨어지기 (3초 후)
     setTimeout(() => {
       setResult(picked)
       setPhase('falling')
@@ -47,12 +51,9 @@ export default function GachaMachine() {
   }
 
   const handleCapsuleComplete = () => {
-    // 3단계: 최종 결과 표시
     setPhase('result')
-    if (result) {
-      addToHistory(result)
-      triggerConfetti()
-    }
+    result.forEach(name => addToHistory(name))
+    triggerConfetti()
   }
 
   const triggerConfetti = async () => {
@@ -90,7 +91,7 @@ export default function GachaMachine() {
   }
 
   const handleReset = () => {
-    setResult(null)
+    setResult([])
     setPhase('idle')
   }
 
@@ -149,12 +150,20 @@ export default function GachaMachine() {
                 </div>
 
                 {/* 텍스트 */}
-                <div className="text-center mt-4">
+                <div className="text-center mt-4 space-y-3">
                   <div className="text-2xl font-bold text-white mb-1">
                     준비 완료!
                   </div>
-                  <div className="text-gray-400 text-sm">
-                    레버를 돌려주세요
+                  <div className="flex items-center justify-center gap-2">
+                    <input
+                      type="number"
+                      min="1"
+                      max={names.length}
+                      value={pickCount}
+                      onChange={(e) => setPickCount(Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-16 px-2 py-1 bg-zinc-800 border border-zinc-700 rounded text-white text-center"
+                    />
+                    <span className="text-gray-400 text-sm">명 뽑기</span>
                   </div>
                 </div>
               </motion.div>
@@ -208,21 +217,18 @@ export default function GachaMachine() {
               </motion.div>
             )}
 
-            {phase === 'falling' && result && (
+            {phase === 'falling' && result.length > 0 && (
               <motion.div
                 key="falling"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="w-full h-[400px] flex items-center justify-center"
-              >
-                <FallingCapsule 
-                  name={result} 
-                  onComplete={handleCapsuleComplete}
-                />
-              </motion.div>
+                onAnimationComplete={() => {
+                  setTimeout(handleCapsuleComplete, 500)
+                }}
+              />
             )}
 
-            {phase === 'result' && result && (
+            {phase === 'result' && result.length > 0 && (
               <motion.div
                 key="result"
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -242,10 +248,14 @@ export default function GachaMachine() {
                   
                   <div className="bg-white rounded-2xl px-10 py-8 shadow-2xl inline-block">
                     <div className="text-sm text-gray-500 mb-2 uppercase tracking-wider">당첨!</div>
-                    <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 mb-3">
-                      {result}
+                    <div className="space-y-2">
+                      {result.map((name, i) => (
+                        <div key={i} className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500">
+                          {name}
+                        </div>
+                      ))}
                     </div>
-                    <div className="text-sm text-gray-600">님이 선택되었습니다!</div>
+                    <div className="text-sm text-gray-600 mt-3">님이 선택되었습니다!</div>
                   </div>
                 </div>
                 

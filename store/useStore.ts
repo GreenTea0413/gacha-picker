@@ -9,7 +9,7 @@ export interface Pair {
 
 // 스토어 상태 타입 정의
 interface GachaStore {
-  // 1명 뽑기 모드
+  // N명 뽑기 모드
   names: string[]
   history: string[]
   allowDuplicate: boolean
@@ -22,7 +22,7 @@ interface GachaStore {
     teamB: string[]
   } | null
   
-  // 1명 뽑기 액션
+  // N명 뽑기 액션
   addName: (name: string) => void
   removeName: (index: number) => void
   clearNames: () => void
@@ -48,7 +48,7 @@ export const useGachaStore = create<GachaStore>((set) => ({
       pairs: [],
       lastTeamResult: null,
       
-      // 1명 뽑기 액션
+      // N명 뽑기 액션
       addName: (name) =>
         set((state) => ({
           names: [...state.names, name],
