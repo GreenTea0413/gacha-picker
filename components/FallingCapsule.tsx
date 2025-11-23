@@ -14,7 +14,7 @@ interface FallingCapsuleProps {
  * - 모양: 완벽한 원형
  * - 색상: 위쪽 반(핑크) + 아래쪽 반(흰색)
  */
-export default function FallingCapsule({ name, onComplete }: FallingCapsuleProps) {
+export default function FallingCapsule({ onComplete }: FallingCapsuleProps) {
   const [phase, setPhase] = useState<'falling' | 'opening'>('falling')
   const color = '#FF6B9D' // 핑크 캡슐
 

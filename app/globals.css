@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #4F46E5;
+  --color-secondary: #6366F1;
+  --color-accent: #8B5CF6;
+  --color-success: #10B981;
+  --color-background: #F9FAFB;
+}
+
+/* 오버스크롤 방지 및 배경색 고정 */
+html, body {
+  overscroll-behavior: none;
+  background-color: #000;
+}
+
 body {
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
 }

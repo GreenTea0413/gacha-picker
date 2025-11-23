@@ -1,12 +1,16 @@
 'use client'
 
 import { useGachaStore } from '@/store/useStore'
-import { History, Trash2, TrendingUp, Users } from 'lucide-react'
+import { History, TrendingUp, Users, Download } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useMemo } from 'react'
+import { useMemo, useRef, useState } from 'react'
+import { captureAndDownload, generateFilename } from '@/lib/screenshot'
+import { soundManager } from '@/lib/sounds'
 
 export default function ResultDisplay() {
-  const { names, history, clearHistory } = useGachaStore()
+  const { history, clearHistory } = useGachaStore()
+  const resultRef = useRef<HTMLDivElement>(null)
+  const [isCapturing, setIsCapturing] = useState(false)
 
   // 통계 계산
   const stats = useMemo(() => {
@@ -26,12 +30,30 @@ export default function ResultDisplay() {
     }
   }, [history])
 
+  const handleScreenshot = async () => {
+    if (!resultRef.current || isCapturing) return
+
+    setIsCapturing(true)
+    soundManager.playClick()
+
+    try {
+      const filename = generateFilename('gacha-result')
+      await captureAndDownload(resultRef.current, filename)
+      alert('결과가 저장되었습니다! 📸')
+    } catch (error) {
+      alert('스크린샷 저장에 실패했습니다.')
+      console.error(error)
+    } finally {
+      setIsCapturing(false)
+    }
+  }
+
   if (history.length === 0) {
     return null
   }
 
   return (
-    <div className="space-y-4">
+    <div ref={resultRef} className="space-y-4">
       {/* 통계 카드 */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -80,12 +102,26 @@ export default function ResultDisplay() {
               (최근 {history.length}명)
             </span>
           </div>
-          <button
-            onClick={clearHistory}
-            className="text-sm text-gray-400 hover:text-red-400 font-medium transition-colors"
-          >
-            초기화
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleScreenshot}
+              disabled={isCapturing}
+              className={`text-sm font-medium transition-colors flex items-center gap-1 ${
+                isCapturing
+                  ? 'text-gray-600 cursor-not-allowed'
+                  : 'text-gray-400 hover:text-cyan-400'
+              }`}
+            >
+              <Download size={16} className={isCapturing ? 'animate-bounce' : ''} />
+              {isCapturing ? '저장 중...' : '저장'}
+            </button>
+            <button
+              onClick={clearHistory}
+              className="text-sm text-gray-400 hover:text-red-400 font-medium transition-colors"
+            >
+              초기화
+            </button>
+          </div>
         </div>
 
         <div className="space-y-2 max-h-64 overflow-y-auto">

@@ -1,7 +1,6 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useState } from 'react'
 import { Hand } from 'lucide-react'
 
 interface GachaLeverProps {
@@ -20,8 +19,6 @@ interface GachaLeverProps {
  * ⚠️ 기능만 수정 가능, 외형/크기/위치 변경 금지! ⚠️
  */
 export default function GachaLever({ onPull, disabled, isPulling }: GachaLeverProps) {
-  const [isHovered, setIsHovered] = useState(false)
-
   const handleClick = () => {
     if (!disabled && !isPulling) {
       onPull()
@@ -33,8 +30,6 @@ export default function GachaLever({ onPull, disabled, isPulling }: GachaLeverPr
       {/* 원형 레버 컨테이너 */}
       <motion.div
         className="relative w-20 h-20 cursor-pointer"
-        onHoverStart={() => !disabled && setIsHovered(true)}
-        onHoverEnd={() => setIsHovered(false)}
         onClick={handleClick}
         whileHover={!disabled ? { scale: 1.05 } : {}}
         whileTap={!disabled ? { scale: 0.95 } : {}}

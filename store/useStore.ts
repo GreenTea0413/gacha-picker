@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
 
 // 짝 타입 정의
 export interface Pair {
@@ -39,7 +40,9 @@ interface GachaStore {
   setTeamResult: (teamA: string[], teamB: string[]) => void
 }
 
-export const useGachaStore = create<GachaStore>((set) => ({
+export const useGachaStore = create<GachaStore>()(
+  persist(
+    (set) => ({
       // 초기 상태
       names: [],
       history: [],
@@ -111,5 +114,10 @@ export const useGachaStore = create<GachaStore>((set) => ({
         set({
           lastTeamResult: { teamA, teamB },
         }),
-    })
+    }),
+    {
+      name: 'gacha-picker-store',
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
 )

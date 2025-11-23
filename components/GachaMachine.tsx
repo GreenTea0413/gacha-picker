@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGachaStore } from '@/store/useStore'
 import GachaMachineBox from '@/components/GachaMachineBox'
-import FallingCapsule from '@/components/FallingCapsule'
 import GachaLever from '@/components/GachaLever'
+import { soundManager } from '@/lib/sounds'
 
 export default function GachaMachine() {
-  const { names, history, addToHistory } = useGachaStore()
+  const { names, addToHistory } = useGachaStore()
   const [phase, setPhase] = useState<'idle' | 'shaking' | 'falling' | 'result'>('idle')
   const [result, setResult] = useState<string[]>([])
   const [pickCount, setPickCount] = useState(1)
@@ -38,21 +38,34 @@ export default function GachaMachine() {
       return
     }
 
+    // 레버 소리
+    soundManager.playLever()
+
     setPhase('shaking')
-    
+
     // 랜덤으로 여러 명 선택
     const shuffled = [...names].sort(() => Math.random() - 0.5)
     const picked = shuffled.slice(0, pickCount)
 
+    // 섞는 소리
+    soundManager.playShuffle()
+
     setTimeout(() => {
       setResult(picked)
       setPhase('falling')
+
+      // 떨어지는 소리
+      soundManager.playDrop()
     }, 3000)
   }
 
   const handleCapsuleComplete = () => {
     setPhase('result')
     result.forEach(name => addToHistory(name))
+
+    // 성공 팡파레 소리
+    soundManager.playSuccess()
+
     triggerConfetti()
   }
 

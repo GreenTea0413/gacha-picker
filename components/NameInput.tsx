@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useGachaStore } from '@/store/useStore'
-import { X, Plus, Trash2 } from 'lucide-react'
+import { X } from 'lucide-react'
 
 export default function NameInput() {
   const [inputValue, setInputValue] = useState('')
