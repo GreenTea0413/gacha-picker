@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import KakaoAds from "./components/KakaoAds";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -79,25 +80,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* 왼쪽 사이드 광고 */}
-        <div className="hidden lg:block fixed left-0 top-1/2 -translate-y-1/2 z-40">
-          <ins
-            className="kakao_ad_area"
-            data-ad-unit="DAN-bBS8ul3kcSuWTTE4"
-            data-ad-width="160"
-            data-ad-height="600"
-          />
-        </div>
-
-        {/* 오른쪽 사이드 광고 */}
-        <div className="hidden lg:block fixed right-0 top-1/2 -translate-y-1/2 z-40">
-          <ins
-            className="kakao_ad_area"
-            data-ad-unit="DAN-J5xEfW6r0Ly25iKQ"
-            data-ad-width="160"
-            data-ad-height="600"
-          />
-        </div>
+        <KakaoAds />
 
         {children}
 
@@ -124,12 +107,6 @@ export default function RootLayout({
           }}
         />
 
-        {/* 카카오 광고 스크립트 */}
-        <Script
-          src="//t1.daumcdn.net/kas/static/ba.min.js"
-          strategy="afterInteractive"
-          async
-        />
       </body>
     </html>
   );
