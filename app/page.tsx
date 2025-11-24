@@ -154,22 +154,22 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white">
+      {/* 사운드 토글 버튼 - 우측 하단 고정 */}
+      <button
+        onClick={toggleSound}
+        className="fixed bottom-8 right-8 p-4 rounded-full bg-zinc-900/80 border border-zinc-700 hover:bg-zinc-800 hover:border-cyan-400 transition-all group z-50 shadow-lg"
+        title={soundEnabled ? '소리 끄기' : '소리 켜기'}
+      >
+        {soundEnabled ? (
+          <Volume2 className="text-cyan-400 group-hover:scale-110 transition-transform" size={28} />
+        ) : (
+          <VolumeX className="text-gray-500 group-hover:scale-110 transition-transform" size={28} />
+        )}
+      </button>
+
       <div className="container mx-auto px-4 py-8">
         {/* 헤더 */}
         <header className="text-center mb-8 relative">
-          {/* 사운드 토글 버튼 - 우측 상단 */}
-          <button
-            onClick={toggleSound}
-            className="absolute top-0 right-4 p-3 rounded-full bg-zinc-900/50 border border-zinc-700 hover:bg-zinc-800 hover:border-cyan-400 transition-all group"
-            title={soundEnabled ? '소리 끄기' : '소리 켜기'}
-          >
-            {soundEnabled ? (
-              <Volume2 className="text-cyan-400 group-hover:scale-110 transition-transform" size={24} />
-            ) : (
-              <VolumeX className="text-gray-500 group-hover:scale-110 transition-transform" size={24} />
-            )}
-          </button>
-
           {/* 배경 장식 */}
           <div className="absolute inset-0 -z-10">
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob"></div>
