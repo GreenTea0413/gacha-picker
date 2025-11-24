@@ -7,5 +7,6 @@
 
 | N명 뽑기 | 팀원 뽑기 (준비 중) | 
 |------|------|
-| <img width="499" height="804" alt="image" src="https://github.com/user-attachments/assets/fa32a2a8-46b8-46d9-8e5b-ff2cb2c14b05" />| <img width="499" height="804" alt="image" src="https://github.com/user-attachments/assets/fa32a2a8-46b8-46d9-8e5b-ff2cb2c14b05" />|
+| <img width="499" height="804" alt="image" src="https://github.com/user-attachments/assets/fa32a2a8-46b8-46d9-8e5b-ff2cb2c14b05" />| <img width="499" height="804" alt="image" src="https://github.com/user-attachments/assets/8cad3864-393c-46d4-9e19-34e39fa2e674" />|
+
 
